@@ -77,11 +77,18 @@ print(result)
 # 1️⃣ 바구니에 있는 과일의 단어 개수 세기
 words = ["apple", "banana", "apple", "cherry", "banana", "apple"]
 
-# result = {}
-# for word in words:
-#     result[word] = result.get(word, 0) + 1
-result = {x: words.count(x) for x in set(words)}
-print(result)                                    # ✅ {'apple': 3, 'banana': 2, 'cherry': 1}
+# 1) 클래식 for
+result = {}
+for word in words:
+    result[word] = result.get(word, 0) + 1
+
+# 2) dict 컴프리헨션
+print({word: words.count(word) for word in set(words)})
+# print({x: words.count(x) for x in set(words)})
+
+# 3) Counter: 요소 갯수를 자동으로 세어주는 딕셔너리 서브클래스
+from collections import Counter
+print(dict(Counter(words)))                                    # ✅ {'apple': 3, 'banana': 2, 'cherry': 1}
 
 
 # 2️⃣ 60점 이상인 경우 합격 설정하기
@@ -103,10 +110,16 @@ print(result)                                    # ✅ {'국어': 90, '영어': 
 stock = {"연필": 10, "지우개": 5, "노트": 3}        # 기존 재고
 incoming = {"지우개": 4, "노트": 7, "볼펜": 12}     # 입고 내역
 
-# stock.update({(x[0],x[1]+stock.get(x[0],0)) for x in incoming.items()})
-print({x:stock.get(x,0)+incoming.get(x,0) for x in set([*stock]+[*incoming])})         # ✅ {'연필': 10, '지우개': 9, '노트': 10, '볼펜': 12}
+# print({x:stock.get(x,0)+incoming.get(x,0) for x in set([*stock]+[*incoming])})         # ✅ {'연필': 10, '지우개': 9, '노트': 10, '볼펜': 12}
 
-for item, qty in incoming.items():
-    stock[item] = stock.get(item, 0) + qty
+# 1) 클래식 for
+# for item, qty in incoming.items():
+#     stock[item] = stock.get(item, 0) + qty
+
+# print(stock)
+
+# 2) dict 컴프리헨션
+stock.update({item: stock[item] + qty if item in stock else qty for item, qty in incoming.items()})
+stock.update({item: stock.get(item, 0) + qty for item, qty in incoming.items()})
 
 print(stock)
