@@ -111,13 +111,22 @@ except ValueError as e:
 #  - 그 외 연산자의 경우: "지원하지 않는 연산자입니다." 예외 발생
 
 def calc(a, op, b):
-    if(not a.isdigit() or not b.isdigit()):
+    try:
+        if op == '+':
+            return int(a)+int(b)
+        elif op=='-':
+            return int(a)-int(b)
+        elif op=='*':
+            return int(a)*int(b)
+        elif op=='/':
+            return int(a)/int(b)
+        else:
+            raise SyntaxError(f"에러: 지원하지 않는 연산자({op})입니다.")
+    except ValueError:
         raise ValueError("에러: 숫자를 입력하세요.")
-    if(op not in "+/"):
-        raise ValueError(f"에러: 지원하지 않는 연산자({op})입니다.")
-    if(op == '/' and int(b) == 0):
+    except ZeroDivisionError:
         raise ZeroDivisionError("에러: 0으로 나눌 수 없습니다.")
-    return (int(a)/int(b) if op == '/' else int(a)+int(b))
+    
 
 # 2️⃣ 계산기 함수 호출 시 예외 처리하기
 # [실행 결과]
@@ -129,7 +138,5 @@ def calc(a, op, b):
 for data in [("10", "+", "5"), ("10", "/", "0"), ("10", "%", "3"), ("ten", "+", "3")]:
     try:
         print(calc(*data))
-    except ValueError as e:
-        print(e)
-    except ZeroDivisionError as e:
+    except Exception as e:  # except (ValueError, ZeroDivisionError) as e 도 가능
         print(e)
